@@ -28,14 +28,6 @@ export function Header() {
   return (
     <header className="bg-cyan-500 text-white sticky top-0 z-50 shadow-md">
       <div className="container mx-auto px-4">
-        {/* Domain banner */}
-        <div className="flex justify-center items-center py-1.5 border-b border-cyan-400 bg-cyan-600">
-          <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <span className="text-sm font-semibold">suachuanho.com.vn</span>
-          </div>
-        </div>
-
         {/* Top bar with hotline */}
         <div className="flex justify-end items-center py-2 border-b border-cyan-400">
           <div className="flex items-center gap-2">

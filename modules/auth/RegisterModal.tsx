@@ -5,13 +5,13 @@ import { Button } from '@/src/app/components/ui/button';
 import { Input } from '@/src/app/components/ui/input';
 import { Label } from '@/src/app/components/ui/label';
 import { Checkbox } from '@/src/app/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/app/components/ui/select';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
 } from '@/src/app/components/ui/dialog';
-import { Eye, EyeOff, Chrome, Facebook, Apple, Mail, Phone, User, Lock, Calendar, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Phone, User, Lock, Shield } from 'lucide-react';
+import { GoogleLogo, FacebookLogo } from 'phosphor-react';
 import { toast } from 'sonner';
 import { useAuthModal } from '@/shared/hooks/useAuthModal';
 
@@ -31,13 +31,8 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     confirmPassword: '',
     email: '',
     phone: '',
-    fullName: '',
-    dateOfBirth: '',
-    gender: '',
     captcha: '',
     agreeTerms: false,
-    rememberMe: false,
-    enable2FA: false,
   });
 
   const generateCaptcha = () => {
@@ -60,13 +55,8 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         confirmPassword: '',
         email: '',
         phone: '',
-        fullName: '',
-        dateOfBirth: '',
-        gender: '',
         captcha: '',
         agreeTerms: false,
-        rememberMe: false,
-        enable2FA: false,
       });
       setVerificationMethod('email');
       setShowPassword(false);
@@ -105,10 +95,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
       return false;
     }
 
-    if (!formData.fullName) {
-      toast.error('Vui lòng nhập họ và tên');
-      return false;
-    }
 
     if (!formData.captcha || formData.captcha.toUpperCase() !== captchaCode) {
       toast.error('Mã xác minh không đúng');
@@ -148,10 +134,10 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0">
         <DialogTitle className="sr-only">Đăng Ký Tài Khoản</DialogTitle>
         <div className="bg-white rounded-2xl overflow-hidden">
-          {/* Header */}
+          {/* Header - Empty (logo removed) */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-8 text-center">
             <h1 className="text-3xl font-bold mb-2">Đăng Ký Tài Khoản</h1>
             <p className="text-cyan-100">Tạo tài khoản để trải nghiệm dịch vụ sửa chữa điện-nước tốt nhất</p>
@@ -161,34 +147,23 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             {/* Social Login Options */}
             <div className="mb-8">
               <p className="text-center text-gray-600 mb-4">Đăng ký nhanh với</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <Button
+              <div className="flex justify-center gap-4">
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => handleSocialLogin('Google')}
-                  className="w-full"
+                  className="w-12 h-12 rounded-full border-2 border-gray-300 hover:border-cyan-500 flex items-center justify-center transition-colors hover:bg-gray-50"
+                  aria-label="Đăng ký với Google"
                 >
-                  <Chrome className="w-5 h-5 mr-2" />
-                  Google
-                </Button>
-                <Button
+                  <GoogleLogo className="w-6 h-6 text-gray-700" weight="fill" />
+                </button>
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => handleSocialLogin('Facebook')}
-                  className="w-full"
+                  className="w-12 h-12 rounded-full border-2 border-gray-300 hover:border-cyan-500 flex items-center justify-center transition-colors hover:bg-gray-50"
+                  aria-label="Đăng ký với Facebook"
                 >
-                  <Facebook className="w-5 h-5 mr-2" />
-                  Facebook
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleSocialLogin('Apple')}
-                  className="w-full"
-                >
-                  <Apple className="w-5 h-5 mr-2" />
-                  Apple
-                </Button>
+                  <FacebookLogo className="w-6 h-6 text-gray-700" weight="fill" />
+                </button>
               </div>
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
@@ -201,9 +176,9 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
             </div>
 
             {/* Main Form */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Thông tin bắt buộc */}
-              <div className="space-y-4 md:col-span-2">
+            <div className="space-y-6">
+              {/* Thông tin đăng nhập */}
+              <div className="space-y-4">
                 <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">1. Thông tin đăng nhập</h3>
               </div>
 
@@ -218,21 +193,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                   placeholder="Nhập tên đăng nhập"
                   value={formData.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="fullName" className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-cyan-600" />
-                  Họ và tên <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="Nhập họ và tên"
-                  value={formData.fullName}
-                  onChange={(e) => handleInputChange('fullName', e.target.value)}
                   required
                 />
               </div>
@@ -285,8 +245,8 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </div>
               </div>
 
-              {/* Thông tin định danh */}
-              <div className="space-y-4 md:col-span-2 mt-4">
+              {/* Thông tin liên hệ */}
+              <div className="space-y-4 mt-4">
                 <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">2. Thông tin liên hệ</h3>
                 <div className="flex items-center gap-4 bg-cyan-50 p-3 rounded-lg">
                   <Label className="text-sm text-gray-700">Phương thức xác minh:</Label>
@@ -318,7 +278,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
               </div>
 
               {verificationMethod === 'email' ? (
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label htmlFor="email" className="flex items-center gap-2">
                     <Mail className="w-4 h-4 text-cyan-600" />
                     Email <span className="text-red-500">*</span>
@@ -334,7 +294,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                   <p className="text-xs text-gray-500">Email sẽ được dùng để xác minh tài khoản và khôi phục mật khẩu</p>
                 </div>
               ) : (
-                <div className="space-y-2 md:col-span-2">
+                <div className="space-y-2">
                   <Label htmlFor="phone" className="flex items-center gap-2">
                     <Phone className="w-4 h-4 text-cyan-600" />
                     Số điện thoại <span className="text-red-500">*</span>
@@ -351,47 +311,12 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </div>
               )}
 
-              {/* Thông tin cá nhân */}
-              <div className="space-y-4 md:col-span-2 mt-4">
-                <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">3. Thông tin cá nhân</h3>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dateOfBirth" className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-cyan-600" />
-                  Ngày sinh
-                </Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  value={formData.dateOfBirth}
-                  onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="gender" className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-cyan-600" />
-                  Giới tính
-                </Label>
-                <Select onValueChange={(value) => handleInputChange('gender', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn giới tính" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Nam</SelectItem>
-                    <SelectItem value="female">Nữ</SelectItem>
-                    <SelectItem value="other">Khác</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Bảo mật & xác thực */}
-              <div className="space-y-4 md:col-span-2 mt-4">
-                <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">4. Bảo mật & xác thực</h3>
+              <div className="space-y-4 mt-4">
+                <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">3. Bảo mật & xác thực</h3>
               </div>
 
-              <div className="space-y-2 md:col-span-2">
+              <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-cyan-600" />
                   Mã xác minh (CAPTCHA) <span className="text-red-500">*</span>
@@ -413,12 +338,8 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </div>
               </div>
 
-              {/* Tiện ích nâng cao */}
-              <div className="space-y-4 md:col-span-2 mt-4">
-                <h3 className="font-bold text-lg text-cyan-700 border-b pb-2">5. Tùy chọn nâng cao</h3>
-              </div>
-
-              <div className="space-y-4 md:col-span-2">
+              {/* Terms Agreement */}
+              <div className="space-y-4 mt-4">
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="agreeTerms"
@@ -445,32 +366,10 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                     <span className="text-red-500">*</span>
                   </Label>
                 </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="rememberMe"
-                    checked={formData.rememberMe}
-                    onCheckedChange={(checked) => handleInputChange('rememberMe', checked as boolean)}
-                  />
-                  <Label htmlFor="rememberMe" className="cursor-pointer">
-                    Ghi nhớ đăng nhập
-                  </Label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="enable2FA"
-                    checked={formData.enable2FA}
-                    onCheckedChange={(checked) => handleInputChange('enable2FA', checked as boolean)}
-                  />
-                  <Label htmlFor="enable2FA" className="cursor-pointer">
-                    Bật xác thực 2 lớp (2FA) để tăng cường bảo mật
-                  </Label>
-                </div>
               </div>
 
               {/* Submit Button */}
-              <div className="md:col-span-2 mt-6">
+              <div className="mt-6">
                 <Button type="submit" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white py-6">
                   Đăng Ký Ngay
                 </Button>
