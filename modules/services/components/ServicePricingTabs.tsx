@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/src/app/components/u
 import { PricingCategory } from '../types/service.types';
 import { AlertCircle, Phone, MessageSquare } from 'lucide-react';
 import { Button } from '@/src/app/components/ui/button';
+import Link from 'next/link';
 
 interface ServicePricingTabsProps {
   categories: PricingCategory[];
@@ -94,10 +95,12 @@ export function ServicePricingTabs({ categories, serviceName }: ServicePricingTa
               Gọi điện
             </Button>
           </a>
-          <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 font-bold rounded-lg shadow-lg border-2 border-white">
-            <MessageSquare className="w-5 h-5 mr-2" />
-            Nhắn tin
-          </Button>
+          <Link href="/contact">
+            <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 font-bold rounded-lg shadow-lg border-2 border-white">
+              <MessageSquare className="w-5 h-5 mr-2" />
+              Liên hệ ngay
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
