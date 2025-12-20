@@ -66,7 +66,7 @@ export function Header() {
               Trang chủ
             </Link>
             <a
-              href="#services"
+              href="/services"
               className="text-lg hover:text-cyan-200 transition-colors"
             >
               Dịch vụ
@@ -178,7 +178,7 @@ export function Header() {
                 Trang chủ
               </Link>
               <a
-                href="#services"
+                href="/services"
                 className="text-lg hover:text-cyan-200 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
@@ -253,4 +253,3 @@ export function Header() {
     </header>
   );
 }
-

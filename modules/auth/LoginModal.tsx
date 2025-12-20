@@ -8,6 +8,7 @@ import { Checkbox } from "@/src/app/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/src/app/components/ui/dialog";
 import {
   Eye,
@@ -120,6 +121,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto p-0">
+        <DialogTitle className="sr-only">Đăng Nhập</DialogTitle>
         <div className="bg-white rounded-2xl overflow-hidden">
           {/* Header with Logo */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-8 text-center">

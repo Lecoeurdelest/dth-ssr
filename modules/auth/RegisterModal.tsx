@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from '@/src/app/components/ui/dialog';
 import { Eye, EyeOff, Chrome, Facebook, Apple, Mail, Phone, User, Lock, Calendar, Shield } from 'lucide-react';
 import { toast } from 'sonner';
@@ -148,6 +149,7 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogTitle className="sr-only">Đăng Ký Tài Khoản</DialogTitle>
         <div className="bg-white rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-8 text-center">
