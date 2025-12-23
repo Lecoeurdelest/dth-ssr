@@ -5,6 +5,8 @@ import { Header, Footer } from "@/shared/components/layout";
 import { AuthModalProvider } from "@/shared/hooks/useAuthModal";
 import { AuthModalRoot } from "@/modules/auth";
 import { ChatBox } from "@/shared/components/ChatBox";
+import { FloatingContactWrapper } from "@/shared/components/FloatingContactWrapper";
+import { ToasterWrapper } from "@/shared/components/ToasterWrapper";
 
 export const metadata: Metadata = {
   title: "Dịch Vụ Sửa Chữa Điện Nước",
@@ -29,6 +31,8 @@ export default function RootLayout({
             </div>
             <AuthModalRoot />
             <ChatBox />
+            <FloatingContactWrapper />
+            <ToasterWrapper />
           </AuthModalProvider>
         </Providers>
       </body>

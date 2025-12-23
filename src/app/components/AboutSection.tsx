@@ -1,10 +1,10 @@
 import { CheckCircle, Award, Shield, Headphones, Users, DollarSign } from 'lucide-react';
 import { Button } from './ui/button';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export function AboutSection() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <section className="bg-white py-16 md:py-24">
@@ -55,7 +55,7 @@ export function AboutSection() {
               vùng lân cận.
             </p>
             <Button 
-              onClick={() => navigate('/news')}
+              onClick={() => router.push('/news')}
               className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-6 text-lg font-semibold transition-all shadow-lg"
             >
               TÌM HIỂU THÊM

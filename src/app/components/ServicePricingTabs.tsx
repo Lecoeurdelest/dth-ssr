@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
-import { PricingCategory } from '../data/servicesData';
+import { PricingCategory } from '@/modules/services/types/service.types';
 import { AlertCircle, Phone, MessageSquare } from 'lucide-react';
 import { Button } from './ui/button';
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useUser } from '../contexts/UserContext';
 import { 
   Star, 
@@ -34,11 +34,11 @@ interface PromotionTier {
 
 export function LoyaltyPointsPage() {
   const { isLoggedIn } = useUser();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Redirect nếu chưa đăng nhập
   if (!isLoggedIn) {
-    navigate('/login');
+    router.push('/login');
     return null;
   }
 
@@ -129,12 +129,12 @@ export function LoyaltyPointsPage() {
   const currentTier = getCurrentTier();
 
   const handleBookService = () => {
-    navigate('/services');
+    router.push('/services');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleUsePoints = () => {
-    navigate('/services');
+    router.push('/services');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

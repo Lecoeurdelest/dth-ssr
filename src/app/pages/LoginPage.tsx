@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
@@ -19,7 +22,7 @@ import { useAuth } from "@/shared/hooks/useAuth";
 const logo = "/images/7781fbf195a9d4087a21bb9d8c87d2ea57e570b5.png";
 
 export function LoginPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginMethod, setLoginMethod] = useState<
@@ -81,7 +84,7 @@ export function LoginPage() {
         }
         toast.success(json?.message || "Đăng nhập thành công!");
         setTimeout(() => {
-          navigate("/tasks");
+          router.push("/tasks");
         }, 500);
       })
       .catch((err) => {
@@ -92,9 +95,9 @@ export function LoginPage() {
 
   const handleSocialLogin = (provider: string) => {
     toast.info(`Đang kết nối với ${provider}...`);
-    setTimeout(() => {
+      setTimeout(() => {
       toast.success(`Đăng nhập thành công qua ${provider}!`);
-      navigate("/tasks");
+      router.push("/tasks");
     }, 1500);
   };
 
@@ -308,12 +311,12 @@ export function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Chưa có tài khoản?{" "}
-                <Link
-                  to="/register"
-                  className="text-cyan-600 hover:underline font-semibold"
-                >
-                  Đăng ký ngay
-                </Link>
+                  <Link
+                    href="/register"
+                    className="text-cyan-600 hover:underline font-semibold"
+                  >
+                    Đăng ký ngay
+                  </Link>
               </p>
             </div>
 
@@ -345,7 +348,7 @@ export function LoginPage() {
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
             Cần hỗ trợ?{" "}
-            <Link to="/contact" className="text-cyan-600 hover:underline">
+            <Link href="/contact" className="text-cyan-600 hover:underline">
               Liên hệ với chúng tôi
             </Link>
           </p>

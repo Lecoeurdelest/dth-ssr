@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 const logo = "/images/7781fbf195a9d4087a21bb9d8c87d2ea57e570b5.png";
 import { useAuth } from "@/shared/hooks/useAuth";
 
@@ -26,13 +27,14 @@ export function Header() {
     email: "",
   });
   const { isLoggedIn, userInfo, login, logout } = useAuth();
-  const location = useLocation();
+  const pathname = usePathname();
 
   const isActive = (path: string) => {
+    if (!pathname) return false;
     if (path === "/") {
-      return location.pathname === "/";
+      return pathname === "/";
     }
-    return location.pathname.startsWith(path);
+    return pathname.startsWith(path);
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -81,7 +83,7 @@ export function Header() {
           {/* Main header */}
           <div className="flex items-center justify-between py-4">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-3">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center p-3 shadow-lg">
                 <img
                   src={logo}
@@ -94,7 +96,7 @@ export function Header() {
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-8">
               <Link
-                to="/"
+                href="/"
                 className={`text-lg transition-colors ${
                   isActive("/")
                     ? "text-red-500 font-bold"
@@ -110,7 +112,7 @@ export function Header() {
                 Dịch vụ
               </a>
               <Link
-                to="/news"
+                href="/news"
                 className={`text-lg transition-colors ${
                   isActive("/news")
                     ? "text-red-500 font-bold"
@@ -120,7 +122,7 @@ export function Header() {
                 Tin tức
               </Link>
               <Link
-                to="/contact"
+                href="/contact"
                 className={`text-lg transition-colors ${
                   isActive("/contact")
                     ? "text-red-500 font-bold"
@@ -145,7 +147,7 @@ export function Header() {
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl overflow-hidden">
                       <div className="py-1">
                         <Link
-                          to="/profile"
+                          href="/profile"
                           className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-cyan-50 flex items-center gap-3 transition-colors"
                           onClick={() => setShowUserDropdown(false)}
                         >
@@ -153,7 +155,7 @@ export function Header() {
                           Thông tin cá nhân
                         </Link>
                         <Link
-                          to="/orders"
+                          href="/orders"
                           className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-cyan-50 flex items-center gap-3 transition-colors"
                           onClick={() => setShowUserDropdown(false)}
                         >
@@ -161,7 +163,7 @@ export function Header() {
                           Lịch sử đặt hàng
                         </Link>
                         <Link
-                          to="/loyalty-points"
+                          href="/loyalty-points"
                           className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-cyan-50 flex items-center gap-3 transition-colors"
                           onClick={() => setShowUserDropdown(false)}
                         >
@@ -206,7 +208,7 @@ export function Header() {
             <nav className="md:hidden py-4 border-t border-cyan-400">
               <div className="flex flex-col gap-3">
                 <Link
-                  to="/"
+                  href="/"
                   className={`text-lg transition-colors py-2 ${
                     isActive("/")
                       ? "text-red-500 font-bold"
@@ -224,7 +226,7 @@ export function Header() {
                   Dịch vụ
                 </a>
                 <Link
-                  to="/news"
+                  href="/news"
                   className={`text-lg transition-colors py-2 ${
                     isActive("/news")
                       ? "text-red-500 font-bold"
@@ -235,7 +237,7 @@ export function Header() {
                   Tin tức
                 </Link>
                 <Link
-                  to="/contact"
+                  href="/contact"
                   className={`text-lg transition-colors py-2 ${
                     isActive("/contact")
                       ? "text-red-500 font-bold"
@@ -250,7 +252,7 @@ export function Header() {
                   <>
                     <div className="border-t border-cyan-400 my-2"></div>
                     <Link
-                      to="/profile"
+                      href="/profile"
                       className="text-lg text-left py-2 hover:text-cyan-200 flex items-center gap-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -258,7 +260,7 @@ export function Header() {
                       Thông tin cá nhân
                     </Link>
                     <Link
-                      to="/orders"
+                      href="/orders"
                       className="text-lg text-left py-2 hover:text-cyan-200 flex items-center gap-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -266,7 +268,7 @@ export function Header() {
                       Lịch sử đặt hàng
                     </Link>
                     <Link
-                      to="/loyalty-points"
+                      href="/loyalty-points"
                       className="text-lg text-left py-2 hover:text-cyan-200 flex items-center gap-2"
                       onClick={() => setMobileMenuOpen(false)}
                     >

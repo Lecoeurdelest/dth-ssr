@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 const redCallButton = "/images/e7dadc01547bc5449ead9531785ea14c4373466f.png";

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { UserCircle, Edit, Save, X, Star, Gift } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export function ProfilePage() {
   const { userInfo, updateUserInfo, isLoggedIn } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [editedInfo, setEditedInfo] = useState(userInfo);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Redirect if not logged in
   if (!isLoggedIn) {
-    navigate('/');
+    router.push('/');
     return null;
   }
 
@@ -31,7 +31,7 @@ export function ProfilePage() {
   };
 
   const handleGoToLoyaltyPoints = () => {
-    navigate('/loyalty-points');
+    router.push('/loyalty-points');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

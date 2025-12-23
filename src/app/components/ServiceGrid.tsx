@@ -1,8 +1,37 @@
 import { Star, Zap, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { servicesData } from "../data/servicesData";
+import { useRouter } from "next/navigation";
+import { getServices } from "@/modules/services/api/services.mock";
+import { useEffect, useState } from "react";
 
-const services = [
+const [staticServices] = [ // keep design-generated static array removed from data dependency
+  [
+    {
+      id: 'sua-dien-tai-nha',
+      title: "Sửa điện tại nhà",
+      desc: "Kiểm tra, sửa chữa – thay thế lắp đặt hệ thống điện",
+      bgColor: "bg-black",
+      iconColor: "text-cyan-400",
+      iconType: "zap",
+      rating: 5,
+      reviews: 3,
+      count: "8 dịch vụ",
+      customIcon: (
+        <div className="relative w-full h-full flex items-center justify-center">
+          <svg viewBox="0 0 100 100" className="w-32 h-32">
+            {/* Blue diagonal stripe */}
+            <path d="M 20 30 L 50 10 L 60 20 L 30 40 Z" fill="#3B82F6" />
+            <path d="M 30 40 L 60 20 L 70 30 L 40 50 Z" fill="#60A5FA" />
+            {/* Red lightning bolt */}
+            <path d="M 55 30 L 65 30 L 50 55 L 55 45 L 45 45 L 60 20 Z" fill="#EF4444" />
+          </svg>
+        </div>
+      ),
+    },
+    // ... other static items omitted for brevity (UI-only)
+  ]
+];
+const services = staticServices[0];
+// attempt to replace with API later if desired
   {
     id: 'sua-dien-tai-nha',
     title: "Sửa điện tại nhà",
@@ -142,10 +171,10 @@ const services = [
 ];
 
 export function ServiceGrid() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleViewDetails = (serviceId: string) => {
-    navigate(`/services/${serviceId}`);
+    router.push(`/services/${serviceId}`);
   };
 
   return (

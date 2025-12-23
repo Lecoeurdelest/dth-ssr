@@ -28,7 +28,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const { openRegister } = useAuthModal();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    identifier: "",
+    username: "",
     password: "",
     rememberMe: false,
   });
@@ -37,7 +37,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   useEffect(() => {
     if (!isOpen) {
       setFormData({
-        identifier: "",
+        username: "",
         password: "",
         rememberMe: false,
       });
@@ -52,7 +52,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.identifier) {
+    if (!formData.username) {
       toast.error("Vui lòng nhập thông tin đăng nhập");
       return;
     }
@@ -64,9 +64,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
     // Call backend login
     const payload = {
-      identifier: formData.identifier,
+      username: formData.username,
       password: formData.password,
-      loginType: "USERNAME",
     };
 
     fetch("http://localhost:8080/auth/login", {
@@ -211,17 +210,17 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="identifier" className="flex items-center gap-2">
+                <Label htmlFor="username" className="flex items-center gap-2">
                   <User className="w-4 h-4 text-cyan-600" />
                   Tên đăng nhập
                 </Label>
                 <Input
-                  id="identifier"
+                  id="username"
                   type="text"
                   placeholder="Nhập tên đăng nhập"
-                  value={formData.identifier}
+                  value={formData.username}
                   onChange={(e) =>
-                    handleInputChange("identifier", e.target.value)
+                    handleInputChange("username", e.target.value)
                   }
                   required
                 />

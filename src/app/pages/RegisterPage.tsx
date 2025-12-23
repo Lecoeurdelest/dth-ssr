@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -10,7 +13,7 @@ import { toast } from 'sonner';
 import { useAuth } from '@/shared/hooks/useAuth';
 
 export function RegisterPage() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -130,7 +133,7 @@ export function RegisterPage() {
           }
           toast.success(json?.message || 'Đăng ký thành công! Đang chuyển hướng...');
           setTimeout(() => {
-            navigate('/tasks');
+            router.push('/tasks');
           }, 800);
         })
         .catch((err) => {
@@ -424,11 +427,11 @@ export function RegisterPage() {
                   />
                   <Label htmlFor="agreeTerms" className="cursor-pointer">
                     Tôi đồng ý với{' '}
-                    <Link to="/terms" className="text-cyan-600 hover:underline">
+                    <Link href="/terms" className="text-cyan-600 hover:underline">
                       Điều khoản sử dụng
                     </Link>{' '}
                     và{' '}
-                    <Link to="/privacy" className="text-cyan-600 hover:underline">
+                    <Link href="/privacy" className="text-cyan-600 hover:underline">
                       Chính sách bảo mật
                     </Link>{' '}
                     <span className="text-red-500">*</span>

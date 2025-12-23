@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { servicesData } from './api/services.mock';
+import { getServiceById, getServices } from './api/services.mock';
 import { ImageWithFallback } from '@/src/app/components/figma/ImageWithFallback';
 import { ArrowLeft, Check, Star, PlayCircle, Phone, MessageSquare } from 'lucide-react';
 import { Button } from '@/src/app/components/ui/button';
@@ -12,6 +12,7 @@ import { ServicePricingTabs } from './components/ServicePricingTabs';
 import { ServiceGallery } from './components/ServiceGallery';
 import { ServiceReviews } from './components/ServiceReviews';
 import Link from 'next/link';
+import { Service } from './types/service.types';
 
 interface ServiceDetailPageProps {
   serviceId: string;
@@ -20,9 +21,23 @@ interface ServiceDetailPageProps {
 export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
   const router = useRouter();
   const { isBookModalOpen, handleBookService, closeBookModal } = useBooking();
-  
-  // Tìm dịch vụ theo ID
-  const service = servicesData.find(s => s.id === serviceId);
+  const [service, setService] = useState<Service | null>(null);
+  const [related, setRelated] = useState<Service[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    // fetch detail
+    getServiceById(serviceId).then(s => {
+      if (mounted) setService(s);
+    });
+    // fetch all services for related list
+    getServices().then(list => {
+      if (!mounted) return;
+      const relatedList = list.filter(item => String(item.id) !== String(serviceId)).slice(0, 3);
+      setRelated(relatedList);
+    });
+    return () => { mounted = false; };
+  }, [serviceId]);
 
   // Scroll to top when service changes
   useEffect(() => {
@@ -47,7 +62,7 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
 
   // Nếu không tìm thấy dịch vụ, chuyển về trang dịch vụ
   if (!service) {
-    router.push('/services');
+    // show nothing while loading; router push only if confirmed not found
     return null;
   }
 
@@ -137,7 +152,7 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
         </div>
 
         {/* Cam kết */}
-        <div className="bg-gradient-to-br from-cyan-600 to-blue-600 rounded-3xl p-8 shadow-lg text-white mb-8">
+        <div className="bg-gradient-to-br from-cyan-600 to-blue-600 rounded-3xl p-8 shadow-lg mb-8 text-white">
           <h2 className="text-3xl font-bold mb-6">
             ✅ Cam kết của chúng tôi
           </h2>
@@ -212,10 +227,7 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
             Dịch vụ khác bạn có thể quan tâm
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {servicesData
-              .filter(s => s.id !== serviceId)
-              .slice(0, 3)
-              .map((relatedService) => (
+            {related.map((relatedService) => (
                 <Link 
                   key={relatedService.id} 
                   href={`/services/${relatedService.id}`}

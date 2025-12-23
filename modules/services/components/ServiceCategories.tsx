@@ -3,10 +3,14 @@
 import { ImageWithFallback } from '@/src/app/components/figma/ImageWithFallback';
 import { Star } from 'lucide-react';
 import { Button } from '@/src/app/components/ui/button';
-import { servicesData } from '../api/services.mock';
 import { useRouter } from 'next/navigation';
+import { Service } from '../types/service.types';
 
-export function ServiceCategories() {
+interface ServiceCategoriesProps {
+  services: Service[];
+}
+
+export function ServiceCategories({ services }: ServiceCategoriesProps) {
   const router = useRouter();
 
   const handleViewDetails = (serviceId: string) => {
@@ -27,7 +31,7 @@ export function ServiceCategories() {
 
         {/* Service Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {servicesData.map((service) => (
+          {services.map((service) => (
             <div 
               key={service.id}
               className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer"

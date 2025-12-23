@@ -24,29 +24,15 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
   const { openLogin } = useAuthModal();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [verificationMethod, setVerificationMethod] = useState<
-    "email" | "phone"
-  >("email");
+  const [verificationMethod, setVerificationMethod] =
+    useState<"email">("email");
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
     email: "",
-    phone: "",
-    captcha: "",
     agreeTerms: false,
   });
-
-  const generateCaptcha = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let result = "";
-    for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-
-  const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
 
   // Reset form when modal closes
   useEffect(() => {
@@ -56,14 +42,11 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         password: "",
         confirmPassword: "",
         email: "",
-        phone: "",
-        captcha: "",
         agreeTerms: false,
       });
       setVerificationMethod("email");
       setShowPassword(false);
       setShowConfirmPassword(false);
-      setCaptchaCode(generateCaptcha());
     }
   }, [isOpen]);
 
@@ -92,16 +75,6 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
       return false;
     }
 
-    if (verificationMethod === "phone" && formData.phone.length < 10) {
-      toast.error("Số điện thoại không hợp lệ");
-      return false;
-    }
-
-    if (!formData.captcha || formData.captcha.toUpperCase() !== captchaCode) {
-      toast.error("Mã xác minh không đúng");
-      return false;
-    }
-
     if (!formData.agreeTerms) {
       toast.error("Vui lòng đồng ý với điều khoản sử dụng");
       return false;
@@ -119,19 +92,20 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
         password: formData.password,
         confirmPassword: formData.confirmPassword,
         email: formData.email,
-        phone: formData.phone
       };
 
       fetch("http://localhost:8080/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       })
         .then(async (res) => {
           const json = await res.json();
-        if (!res.ok || !json?.success) {
-            throw new Error(json?.error || json?.message || "Registration failed");
+          if (!res.ok || !json?.success) {
+            throw new Error(
+              json?.error || json?.message || "Registration failed"
+            );
           }
           toast.success(json?.message || "Đăng ký thành công!");
           onClose();

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/shared/hooks/useAuth';
-import { useAuthModal } from '@/shared/hooks/useAuthModal';
+import { useState } from "react";
+import { useAuth } from "@/shared/hooks/useAuth";
+import { useAuthModal } from "@/shared/hooks/useAuthModal";
 
 export function useBooking() {
   const { isLoggedIn } = useAuth();
@@ -10,10 +10,10 @@ export function useBooking() {
   const [isBookModalOpen, setIsBookModalOpen] = useState(false);
 
   const handleBookService = () => {
-    if (!isLoggedIn) {
-      openLogin();
-      return;
-    }
+    // if (!isLoggedIn) {
+    //   openLogin();
+    //   return;
+    // }
     setIsBookModalOpen(true);
   };
 
@@ -24,7 +24,6 @@ export function useBooking() {
   return {
     isBookModalOpen,
     handleBookService,
-    closeBookModal
+    closeBookModal,
   };
 }
-

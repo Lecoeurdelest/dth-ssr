@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/app/components/ui/dialog';
 import { Button } from '@/src/app/components/ui/button';
 import { Star, MapPin, Ruler, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react';
@@ -12,9 +13,16 @@ interface WorkerSelectionModalProps {
   onWorkerSelected: (workerId: string) => void;
 }
 
-const fetchWorkers = async (serviceId?: string) => {
-  // Workers endpoint not implemented on BE yet; return empty list
-  return [];
+const fetchWorkers = async (serviceName?: string) => {
+  try {
+    const base = process.env.NEXT_PUBLIC_API_URL || '';
+    const res = await fetch(`${base}/workers?service=${encodeURIComponent(serviceName || '')}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data || [];
+  } catch (e) {
+    return [];
+  }
 };
 
 export function WorkerSelectionModal({ isOpen, onClose, serviceId, onWorkerSelected }: WorkerSelectionModalProps) {

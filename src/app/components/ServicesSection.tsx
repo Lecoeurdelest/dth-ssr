@@ -1,16 +1,28 @@
+import "use client";
+import React, { useEffect, useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Star, ArrowRight, Zap, CheckCircle2, Award } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
-import { servicesData } from '../data/servicesData';
-import { useNavigate } from 'react-router-dom';
+import { getServices } from '@/modules/services/api/services.mock';
+import { useRouter } from 'next/navigation';
+import { Service } from '@/modules/services/types/service.types';
 
 export function ServicesSection() {
-  const navigate = useNavigate();
+  const router = useRouter();
+  const [services, setServices] = useState<Service[]>([]);
 
   const handleViewDetails = (serviceId: string) => {
-    navigate(`/services/${serviceId}`);
+    router.push(`/services/${serviceId}`);
   };
+
+  useEffect(() => {
+    let mounted = true;
+    getServices().then(data => {
+      if (mounted && data && data.length) setServices(data);
+    });
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <section className="bg-gradient-to-b from-cyan-50 via-blue-50 to-white py-16 min-h-screen">
@@ -54,7 +66,7 @@ export function ServicesSection() {
 
         {/* Service Cards Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto mb-12">
-          {servicesData.map((service) => {
+          {services.map((service) => {
             return (
               <Card
                 key={service.id}
@@ -199,7 +211,7 @@ export function ServicesSection() {
               </Button>
             </a>
             <Button 
-              onClick={() => navigate('/contact')}
+              onClick={() => router.push('/contact')}
               className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-6 text-lg font-bold shadow-lg"
             >
               ✉️ Gửi yêu cầu tư vấn

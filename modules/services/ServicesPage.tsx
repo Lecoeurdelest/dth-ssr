@@ -8,12 +8,26 @@ import { ServicePricingTabs } from "./components/ServicePricingTabs";
 import { ServiceReviews } from "./components/ServiceReviews";
 import { Button } from "@/src/app/components/ui/button";
 import { Phone, MessageSquare } from "lucide-react";
-import { servicesData } from "./api/services.mock";
+import { getServices } from "./api/services.mock";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Service } from "./types/service.types";
 
 export function ServicesPage() {
-  // Use first service as mock data for static sections
-  const mockService = servicesData[0];
+  const [services, setServices] = useState<Service[] | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    getServices().then((data) => {
+      if (mounted) setServices(data);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Use first service as mock data for static sections (fallback to bundled data)
+  const mockService = services?.[0];
   const mockDetails = mockService?.details || {
     title: "Dịch vụ sửa chữa",
     pricingCategories: [],
@@ -34,7 +48,7 @@ export function ServicesPage() {
       <ProfessionalTeamSection />
 
       {/* Service Categories Section */}
-      <ServiceCategories />
+      <ServiceCategories services={services || []} />
 
       {/* Professional Team / Worker Selector Section */}
       <ServiceWorkerSelector />

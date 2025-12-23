@@ -1,11 +1,11 @@
 import { Phone, MessageCircle } from 'lucide-react';
 import { Button } from './ui/button';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useChat } from '../contexts/ChatContext';
 
 export function HeroSection() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { openChat } = useChat();
 
   return (
@@ -40,7 +40,7 @@ export function HeroSection() {
             <Button 
               size="lg"
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all"
-              onClick={() => navigate('/contact')}
+              onClick={() => router.push('/contact')}
             >
               <Phone className="w-5 h-5 mr-2" />
               ĐẶT LỊCH NGAY

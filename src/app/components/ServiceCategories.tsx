@@ -1,16 +1,28 @@
+import "use client";
+import React, { useEffect, useState } from 'react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { Star } from 'lucide-react';
 import { Button } from './ui/button';
-import { servicesData } from '../data/servicesData';
-import { useNavigate } from 'react-router-dom';
+import { getServices } from '@/modules/services/api/services.mock';
+import { useRouter } from 'next/navigation';
+import { Service } from '@/modules/services/types/service.types';
 
 export function ServiceCategories() {
-  const navigate = useNavigate();
+  const router = useRouter();
+  const [services, setServices] = useState<Service[]>([]);
 
   const handleViewDetails = (serviceId: string) => {
-    navigate(`/services/${serviceId}`);
+    router.push(`/services/${serviceId}`);
     window.scrollTo(0, 0);
   };
+
+  useEffect(() => {
+    let mounted = true;
+    getServices().then(data => {
+      if (mounted && data && data.length) setServices(data);
+    });
+    return () => { mounted = false; };
+  }, []);
 
   return (
     <section id="services-section" className="bg-gray-50 py-16">
@@ -25,7 +37,7 @@ export function ServiceCategories() {
 
         {/* Service Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {servicesData.map((service) => (
+          {services.map((service) => (
             <div 
               key={service.id}
               className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer"

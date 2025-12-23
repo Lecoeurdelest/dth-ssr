@@ -367,7 +367,7 @@ export function BookServiceModal({ isOpen, onClose, serviceName, serviceId }: Bo
         <WorkerSelectionModal
           isOpen={showWorkerSelection}
           onClose={handleBackToForm}
-          serviceType={serviceName}
+          serviceId={serviceId}
           onWorkerSelected={handleWorkerSelected}
         />
       )}
