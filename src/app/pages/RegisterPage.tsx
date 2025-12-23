@@ -7,9 +7,11 @@ import { Checkbox } from '../components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Eye, EyeOff, Chrome, Facebook, Apple, Mail, Phone, User, Lock, Calendar, Shield } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuth } from '@/shared/hooks/useAuth';
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<'email' | 'phone'>('email');
@@ -91,10 +93,50 @@ export function RegisterPage() {
     e.preventDefault();
     
     if (validateForm()) {
-      toast.success('Đăng ký thành công! Đang chuyển hướng...');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1500);
+      const [firstName, ...rest] = formData.fullName.trim().split(' ');
+      const lastName = rest.join(' ');
+      const payload: any = {
+        username: formData.username,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        firstName: firstName || '',
+        lastName: lastName || '',
+        email: verificationMethod === 'email' ? formData.email : undefined,
+        phone: verificationMethod === 'phone' ? formData.phone : undefined,
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
+        agreeTerms: formData.agreeTerms,
+      };
+
+      fetch('http://localhost:8080/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      })
+        .then(async (res) => {
+          const json = await res.json();
+          if (!res.ok || !json?.success) {
+            throw new Error(json?.error || json?.message || 'Registration failed');
+          }
+          const user = json.data?.user;
+          if (user) {
+            auth.login({
+              name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+              birthdate: user.dateOfBirth || '',
+              phone: user.phone || '',
+              email: user.email || '',
+            });
+          }
+          toast.success(json?.message || 'Đăng ký thành công! Đang chuyển hướng...');
+          setTimeout(() => {
+            navigate('/tasks');
+          }, 800);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error(err.message || 'Đăng ký thất bại');
+        });
     }
   };
 

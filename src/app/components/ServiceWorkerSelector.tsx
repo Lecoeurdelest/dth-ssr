@@ -130,7 +130,7 @@ export function ServiceWorkerSelector() {
         <WorkerSelectionModal 
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          serviceType={serviceTypes.find(s => s.id === selectedService)?.title || ''}
+          serviceId={selectedService}
         />
       )}
     </>

@@ -15,10 +15,12 @@ import {
   Mail,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/shared/hooks/useAuth";
 const logo = "/images/7781fbf195a9d4087a21bb9d8c87d2ea57e570b5.png";
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const auth = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loginMethod, setLoginMethod] = useState<
     "username" | "email" | "phone"
@@ -46,11 +48,46 @@ export function LoginPage() {
       return;
     }
 
-    // Mock login
-    toast.success("Đăng nhập thành công!");
-    setTimeout(() => {
-      navigate("/tasks");
-    }, 1000);
+    const payload = {
+      identifier: formData.identifier,
+      password: formData.password,
+      loginType:
+        loginMethod === "username"
+          ? "USERNAME"
+          : loginMethod === "email"
+          ? "EMAIL"
+          : "PHONE",
+    };
+
+    fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (!res.ok || !json?.success) {
+          throw new Error(json?.error || json?.message || "Login failed");
+        }
+        const user = json.data?.user;
+        if (user) {
+          auth.login({
+            name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+            birthdate: user.dateOfBirth || "",
+            phone: user.phone || "",
+            email: user.email || "",
+          });
+        }
+        toast.success(json?.message || "Đăng nhập thành công!");
+        setTimeout(() => {
+          navigate("/tasks");
+        }, 500);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || "Đăng nhập thất bại");
+      });
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -78,7 +115,7 @@ export function LoginPage() {
                 className="w-full h-full object-contain"
               />
             </div>
-            <h1 className="text-3xl font-bold mb-2">Đăng Nhập</h1>
+            <h1 className="text-3xl font-bold mb-2">Đăng Nhậppp</h1>
             <p className="text-cyan-100">Chào mừng bạn quay trở lại!</p>
           </div>
 

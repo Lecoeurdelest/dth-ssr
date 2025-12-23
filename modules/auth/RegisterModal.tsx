@@ -114,11 +114,35 @@ export function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
     e.preventDefault();
 
     if (validateForm()) {
-      toast.success("Đăng ký thành công!");
-      onClose();
-      setTimeout(() => {
-        openLogin();
-      }, 500);
+      const payload = {
+        username: formData.username,
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+        email: formData.email,
+        phone: formData.phone
+      };
+
+      fetch("http://localhost:8080/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      })
+        .then(async (res) => {
+          const json = await res.json();
+        if (!res.ok || !json?.success) {
+            throw new Error(json?.error || json?.message || "Registration failed");
+          }
+          toast.success(json?.message || "Đăng ký thành công!");
+          onClose();
+          setTimeout(() => {
+            openLogin();
+          }, 500);
+        })
+        .catch((err) => {
+          console.error(err);
+          toast.error(err.message || "Đăng ký thất bại");
+        });
     }
   };
 

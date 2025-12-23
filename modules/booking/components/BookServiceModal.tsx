@@ -83,27 +83,70 @@ export function BookServiceModal({ isOpen, onClose, serviceName, serviceId }: Bo
       return;
     }
 
-    // Mock submit
-    toast.success('Đặt dịch vụ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.');
-    
-    // Reset form
-    setFormData({
-      fullName: '',
-      phone: '',
-      email: '',
-      address: '',
-      serviceDate: '',
-      serviceTime: '',
-      description: '',
-      contactMethod: 'phone',
-      selectedWorkerId: undefined,
-      paymentMethod: undefined
-    });
-    
-    setCurrentStep('form');
-    setShowWorkerSelection(false);
-    setShowPayment(false);
-    onClose();
+    // Build scheduledAt from serviceDate + serviceTime
+    if (!formData.serviceDate) {
+      toast.error('Vui lòng chọn ngày dịch vụ');
+      return;
+    }
+    const date = formData.serviceDate;
+    let time = '09:00';
+    if (formData.serviceTime === 'morning') time = '09:00';
+    else if (formData.serviceTime === 'afternoon') time = '14:00';
+    else if (formData.serviceTime === 'evening') time = '18:00';
+    else if (formData.serviceTime === 'flexible') time = '09:00';
+
+    const scheduledAt = new Date(`${date}T${time}:00Z`).toISOString();
+    const payload = {
+      serviceId: serviceId ? Number(serviceId) : null,
+      workerId: formData.selectedWorkerId ? Number(formData.selectedWorkerId) : null,
+      scheduledAt: scheduledAt,
+      durationMinutes: 120,
+      address: {
+        line: formData.address,
+        district: '',
+        city: '',
+        postalCode: '',
+        country: ''
+      },
+      notes: formData.description
+    };
+
+    fetch('http://localhost:8080/orders', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (!res.ok || !json?.success) {
+          throw new Error(json?.error || json?.message || 'Booking failed');
+        }
+        toast.success(json?.message || 'Đặt dịch vụ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.');
+        // Reset & close
+        setFormData({
+          fullName: '',
+          phone: '',
+          email: '',
+          address: '',
+          serviceDate: '',
+          serviceTime: '',
+          description: '',
+          contactMethod: 'phone',
+          selectedWorkerId: undefined,
+          paymentMethod: undefined
+        });
+        setCurrentStep('form');
+        setShowWorkerSelection(false);
+        setShowPayment(false);
+        onClose();
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || 'Đặt dịch vụ thất bại');
+      });
   };
 
   const mockBookingSummary = {

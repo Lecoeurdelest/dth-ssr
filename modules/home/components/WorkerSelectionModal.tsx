@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/src/app/components/ui/dialog';
 import { Button } from '@/src/app/components/ui/button';
 import { Star, MapPin, Ruler, AlertCircle, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Worker {
   id: string;
@@ -19,55 +19,34 @@ interface WorkerSelectionModalProps {
   isOpen: boolean;
   onClose: () => void;
   serviceType: string;
+  serviceId?: string;
+  onWorkerSelected?: (workerId?: string) => void;
 }
 
-// Mock data cho các thợ
-const mockWorkers: Worker[] = [
-  {
-    id: '1',
-    name: 'Lê Hữu C',
-    rating: 4.9,
-    reviews: 10,
-    location: 'Huyện Nho Quan, Ninh Bình',
-    distance: '8.2 km',
-    available: false
-  },
-  {
-    id: '2',
-    name: 'Lê Hữu C',
-    rating: 4.9,
-    reviews: 10,
-    location: 'Thành phố Ninh Bình, Ninh Bình',
-    distance: '1.8 km',
-    available: true
-  },
-  {
-    id: '3',
-    name: 'Phạm Công D',
-    rating: 4.6,
-    reviews: 5,
-    location: 'Huyện Gia Viễn, Ninh Bình',
-    distance: '12.5 km',
-    available: false
-  },
-  {
-    id: '4',
-    name: 'Vũ Đức E',
-    rating: 4.8,
-    reviews: 7,
-    location: 'Huyện Yên Khánh, Ninh Bình',
-    distance: '15.3 km',
-    available: true
-  }
-];
+export function WorkerSelectionModal({ isOpen, onClose, serviceType, serviceId, onWorkerSelected }: WorkerSelectionModalProps) {
+  const [loading, setLoading] = useState(false);
+  const [serviceName, setServiceName] = useState<string | null>(serviceType || null);
 
-export function WorkerSelectionModal({ isOpen, onClose, serviceType }: WorkerSelectionModalProps) {
-  const [selectedWorker, setSelectedWorker] = useState<string | null>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    if (serviceId) {
+      setLoading(true);
+      fetch(`http://localhost:8080/services/${serviceId}`)
+        .then(res => res.json())
+        .then(json => {
+          if (json?.success && json.data) {
+            setServiceName(json.data.title || json.data.name || serviceType);
+          } else {
+            setServiceName(serviceType || null);
+          }
+        })
+        .catch(() => setServiceName(serviceType || null))
+        .finally(() => setLoading(false));
+    }
+  }, [isOpen, serviceId, serviceType]);
 
-  const handleSelectWorker = (workerId: string) => {
-    setSelectedWorker(workerId);
-    // Here you would typically handle the worker selection
-    alert(`Đã chọn thợ: ${mockWorkers.find(w => w.id === workerId)?.name}`);
+  const handleContinue = () => {
+    if (onWorkerSelected) onWorkerSelected('');
     onClose();
   };
 

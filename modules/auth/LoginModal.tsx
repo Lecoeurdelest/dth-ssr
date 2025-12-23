@@ -62,19 +62,43 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
       return;
     }
 
-    // Mock login - use shared useAuth hook
-    login({
-      name: formData.identifier,
-      birthdate: "",
-      phone: "",
-      email: "",
-    });
+    // Call backend login
+    const payload = {
+      identifier: formData.identifier,
+      password: formData.password,
+      loginType: "USERNAME",
+    };
 
-    toast.success("Đăng nhập thành công!");
-    onClose();
-    setTimeout(() => {
-      router.push("/tasks");
-    }, 1000);
+    fetch("http://localhost:8080/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    })
+      .then(async (res) => {
+        const json = await res.json();
+        if (!res.ok || !json?.success) {
+          throw new Error(json?.error || json?.message || "Login failed");
+        }
+        const user = json.data?.user;
+        if (user) {
+          login({
+            name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+            birthdate: user.dateOfBirth || "",
+            phone: user.phone || "",
+            email: user.email || "",
+          });
+        }
+        toast.success(json?.message || "Đăng nhập thành công!");
+        onClose();
+        setTimeout(() => {
+          router.push("/tasks");
+        }, 1000);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || "Đăng nhập thất bại");
+      });
   };
 
   const handleSocialLogin = (provider: string) => {
@@ -107,7 +131,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto p-0">
-        <DialogTitle className="sr-only">Đăng Nhập</DialogTitle>
+        <DialogTitle className="sr-only">Đăng Nhậpp</DialogTitle>
         <div className="bg-white rounded-2xl overflow-hidden">
           {/* Header - Empty (logo removed) */}
           <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-5 text-center">

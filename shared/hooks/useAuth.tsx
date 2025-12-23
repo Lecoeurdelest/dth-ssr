@@ -27,6 +27,26 @@ export function AuthProvider({ children }: { children: ReactNode }): React.React
     phone: "",
     email: "",
   });
+  // Hydrate from server if cookie-based session exists
+  React.useEffect(() => {
+    fetch("http://localhost:8080/auth/me", { credentials: "include" })
+      .then(async (res) => {
+        const json = await res.json();
+        if (res.ok && json?.success && json?.data) {
+          const user = json.data;
+          setIsLoggedIn(true);
+          setUserInfo({
+            name: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+            birthdate: user.dateOfBirth || "",
+            phone: user.phone || "",
+            email: user.email || "",
+          });
+        }
+      })
+      .catch(() => {
+        // ignore
+      });
+  }, []);
 
   const login = (info: UserInfo) => {
     setIsLoggedIn(true);
@@ -34,12 +54,18 @@ export function AuthProvider({ children }: { children: ReactNode }): React.React
   };
 
   const logout = () => {
-    setIsLoggedIn(false);
-    setUserInfo({
-      name: "",
-      birthdate: "",
-      phone: "",
-      email: "",
+    // Call backend to clear cookies
+    fetch("http://localhost:8080/auth/logout-cookie", {
+      method: "POST",
+      credentials: "include",
+    }).finally(() => {
+      setIsLoggedIn(false);
+      setUserInfo({
+        name: "",
+        birthdate: "",
+        phone: "",
+        email: "",
+      });
     });
   };
 
