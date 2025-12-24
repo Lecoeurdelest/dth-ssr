@@ -13,7 +13,7 @@ import {
     LogOut,
 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAuthModal } from "@/shared/hooks/useAuthModal";
 import { useAuth } from "@/shared/hooks/useAuth";
@@ -26,8 +26,29 @@ export function Header() {
     const router = useRouter();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
     const { openLogin, openRegister } = useAuthModal();
     const { isLoggedIn, logout } = useAuth();
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target as Node)
+            ) {
+                setShowUserDropdown(false);
+            }
+        };
+
+        if (showUserDropdown) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [showUserDropdown]);
 
     const handleLogout = async () => {
         try {
@@ -93,7 +114,7 @@ export function Header() {
                         </Link>
 
                         {/* User Menu */}
-                        <div className="relative">
+                        <div className="relative" ref={dropdownRef}>
                             <Button
                                 variant="ghost"
                                 className="flex items-center gap-2 text-white hover:bg-cyan-600"
@@ -106,73 +127,77 @@ export function Header() {
                                 <ChevronDown className="w-4 h-4" />
                             </Button>
 
-                            {showUserDropdown && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                                    {!isLoggedIn ? (
-                                        <>
-                                            <button
-                                                onClick={() => {
-                                                    setShowUserDropdown(false);
-                                                    openLogin();
-                                                }}
-                                                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                            >
-                                                Đăng nhập
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setShowUserDropdown(false);
-                                                    openRegister();
-                                                }}
-                                                className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                            >
-                                                Đăng ký
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Link
-                                                href="/profile"
-                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                                                onClick={() =>
-                                                    setShowUserDropdown(false)
-                                                }
-                                            >
-                                                <UserCircle className="w-4 h-4" />
-                                                Hồ sơ
-                                            </Link>
-                                            <Link
-                                                href="/orders"
-                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                                                onClick={() =>
-                                                    setShowUserDropdown(false)
-                                                }
-                                            >
-                                                <History className="w-4 h-4" />
-                                                Lịch sử đơn hàng
-                                            </Link>
-                                            <Link
-                                                href="/loyalty-points"
-                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-                                                onClick={() =>
-                                                    setShowUserDropdown(false)
-                                                }
-                                            >
-                                                <Award className="w-4 h-4" />
-                                                Điểm tích lũy
-                                            </Link>
-                                            <div className="border-t border-gray-200 my-1"></div>
-                                            <button
-                                                onClick={handleLogout}
-                                                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2"
-                                            >
-                                                <LogOut className="w-4 h-4" />
-                                                Đăng xuất
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            )}
+                            <div
+                                className={`absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 transition-all duration-200 ${
+                                    showUserDropdown
+                                        ? "opacity-100 visible"
+                                        : "opacity-0 invisible"
+                                }`}
+                            >
+                                {!isLoggedIn ? (
+                                    <>
+                                        <button
+                                            onClick={() => {
+                                                setShowUserDropdown(false);
+                                                openLogin();
+                                            }}
+                                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                        >
+                                            Đăng nhập
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setShowUserDropdown(false);
+                                                openRegister();
+                                            }}
+                                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                        >
+                                            Đăng ký
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link
+                                            href="/profile"
+                                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                            onClick={() =>
+                                                setShowUserDropdown(false)
+                                            }
+                                        >
+                                            <UserCircle className="w-4 h-4" />
+                                            Hồ sơ
+                                        </Link>
+                                        <Link
+                                            href="/orders"
+                                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                            onClick={() =>
+                                                setShowUserDropdown(false)
+                                            }
+                                        >
+                                            <History className="w-4 h-4" />
+                                            Lịch sử đơn hàng
+                                        </Link>
+                                        <Link
+                                            href="/loyalty-points"
+                                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                                            onClick={() =>
+                                                setShowUserDropdown(false)
+                                            }
+                                        >
+                                            <Award className="w-4 h-4" />
+                                            Điểm tích lũy
+                                        </Link>
+                                        <div className="border-t border-gray-200 my-1"></div>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            Đăng xuất
+                                        </button>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </nav>
 

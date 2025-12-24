@@ -75,10 +75,11 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 router.push("/tasks");
             }, 1000);
         } catch (error: any) {
-            toast.error(
-                error.message ||
-                    "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin."
-            );
+            console.error("Login error:", error);
+            const errorMessage =
+                error?.message ||
+                "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
+            toast.error(errorMessage);
         }
     };
 
