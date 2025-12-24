@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { ProfessionalTeamSection } from "./components/ProfessionalTeamSection";
 import { ServiceCategories } from "./components/ServiceCategories";
 import { ServiceWorkerSelector } from "./components/ServiceWorkerSelector";
@@ -7,13 +8,35 @@ import { ServiceGallery } from "./components/ServiceGallery";
 import { ServicePricingTabs } from "./components/ServicePricingTabs";
 import { ServiceReviews } from "./components/ServiceReviews";
 import { Button } from "@/shared/components/ui/button";
-import { Phone, MessageSquare } from "lucide-react";
-import { servicesData } from "./api/services.mock";
+import { Phone, MessageSquare, Loader2, AlertCircle } from "lucide-react";
+import { getServices } from "./api/services.api";
 import Link from "next/link";
 
 export function ServicesPage() {
-  // Use first service as mock data for static sections
-  const mockService = servicesData[0];
+  const [services, setServices] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const servicesData = await getServices();
+        setServices(servicesData);
+      } catch (err: any) {
+        console.error('Failed to load services:', err);
+        setError('Không thể tải danh sách dịch vụ. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  // Use first service as mock data for static sections if services are loaded
+  const mockService = services[0];
   const mockDetails = mockService?.details || {
     title: "Dịch vụ sửa chữa",
     pricingCategories: [],
@@ -27,6 +50,33 @@ export function ServicesPage() {
     totalReviews > 0
       ? mockDetails.reviews.reduce((sum, r) => sum + r.rating, 0) / totalReviews
       : 4.8;
+
+  if (loading) {
+    return (
+      <div className="pt-24 pb-16 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-cyan-600 mx-auto mb-4" />
+          <p className="text-gray-600">Đang tải danh sách dịch vụ...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="pt-24 pb-16 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">⚠️ {error}</div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+          >
+            Thử lại
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-16">

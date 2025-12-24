@@ -17,20 +17,36 @@ export function OrdersPage() {
   const [reviewingOrder, setReviewingOrder] = useState<Order | null>(null);
   const [showGuide, setShowGuide] = useState(true);
 
-  const handleReviewSubmit = (reviewData: ReviewData) => {
-    // Cập nhật trạng thái đơn hàng thành "Đã đánh giá"
-    updateOrder(reviewData.orderId, { reviewSubmitted: true });
+  const handleReviewSubmit = async (reviewData: ReviewData) => {
+    try {
+      // Import the API function
+      const { createReview } = await import('./api/orders.api');
 
-    // Lưu đánh giá vào localStorage
-    const existingReviews = JSON.parse(localStorage.getItem('serviceReviews') || '[]');
-    const newReview = {
-      ...reviewData,
-      timestamp: new Date().toISOString()
-    };
-    localStorage.setItem('serviceReviews', JSON.stringify([...existingReviews, newReview]));
+      // Create review via API
+      await createReview(reviewData.orderId, {
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        images: reviewData.images
+      });
 
-    // Đóng modal đánh giá
-    setReviewingOrder(null);
+      // Cập nhật trạng thái đơn hàng thành "Đã đánh giá"
+      updateOrder(reviewData.orderId, { reviewSubmitted: true });
+
+      // Lưu đánh giá vào localStorage (backup)
+      const existingReviews = JSON.parse(localStorage.getItem('serviceReviews') || '[]');
+      const newReview = {
+        ...reviewData,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem('serviceReviews', JSON.stringify([...existingReviews, newReview]));
+
+      toast.success('Cảm ơn bạn đã đánh giá dịch vụ!');
+      // Đóng modal đánh giá
+      setReviewingOrder(null);
+    } catch (error: any) {
+      console.error('Error submitting review:', error);
+      toast.error('Có lỗi xảy ra khi gửi đánh giá. Vui lòng thử lại.');
+    }
   };
 
   const handleReviewClick = (order: Order) => {

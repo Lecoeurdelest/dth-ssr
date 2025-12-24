@@ -26,6 +26,18 @@ interface PageResponse<T> {
 
 // Convert backend ServiceDto to frontend Service interface
 function mapServiceDtoToService(dto: ServiceDto): any {
+  // Parse details JSON if available
+  let parsedDetails = {};
+  if (dto.details) {
+    try {
+      parsedDetails = JSON.parse(dto.details);
+    } catch (error) {
+      console.warn('Failed to parse service details JSON:', error);
+    }
+  }
+
+  const details = parsedDetails as any;
+
   return {
     id: dto.id.toString(),
     title: dto.name,
@@ -38,16 +50,16 @@ function mapServiceDtoToService(dto: ServiceDto): any {
       title: dto.name,
       description: dto.description,
       headerImage: dto.imageUrl || '/images/default-service.jpg',
-      subServices: [], // TODO: Parse from details JSON
-      pricingCategories: [], // TODO: Parse from details JSON
-      commitments: [
+      subServices: details.subServices || [],
+      pricingCategories: details.pricingCategories || [],
+      commitments: details.commitments || [
         "Đảm bảo chất lượng dịch vụ",
         "Thợ có chuyên môn cao",
         "Giá cả cạnh tranh",
         "Hỗ trợ 24/7"
       ],
-      videoUrl: null,
-      images: [],
+      videoUrl: details.videoUrl || null,
+      images: details.images || [],
       reviews: [] // TODO: Get from reviews API
     }
   };

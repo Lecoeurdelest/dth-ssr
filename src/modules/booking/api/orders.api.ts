@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/api-client';
 interface CreateOrderRequest {
   serviceId: number;
   workerId?: number;
-  scheduledAt?: string; // ISO string
+  scheduledAt?: string; // ISO string format for LocalDateTime
   durationMinutes?: number;
   addressLine: string;
   district?: string;

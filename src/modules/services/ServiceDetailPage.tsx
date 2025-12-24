@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { getServices, getServiceById, servicesData } from './api/services.mock';
+import { getServices, getServiceById } from './api/services.api';
 import { ImageWithFallback } from '@/shared/components/figma/ImageWithFallback';
 import { ArrowLeft, Check, Star, PlayCircle, Phone, MessageSquare, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
@@ -21,17 +21,25 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
   const router = useRouter();
   const { isBookModalOpen, handleBookService, closeBookModal } = useBooking();
   const [service, setService] = useState<any>(null);
+  const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch service data
   useEffect(() => {
-    const fetchService = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
-        const serviceData = await getServiceById(serviceId);
+
+        // Load both the specific service and all services for related services
+        const [serviceData, allServices] = await Promise.all([
+          getServiceById(serviceId),
+          getServices()
+        ]);
+
         setService(serviceData);
+        setServices(allServices);
       } catch (err) {
         console.error('Failed to load service:', err);
         setError('Không thể tải thông tin dịch vụ. Vui lòng thử lại.');
@@ -41,7 +49,7 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
     };
 
     if (serviceId) {
-      fetchService();
+      fetchData();
     }
   }, [serviceId]);
 
@@ -268,19 +276,19 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
             Dịch vụ khác bạn có thể quan tâm
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Load related services - for now using mock data */}
-            {servicesData
+            {/* Load related services */}
+            {services
               .filter(s => s.id !== serviceId)
               .slice(0, 3)
               .map((relatedService) => (
-                <Link 
-                  key={relatedService.id} 
+                <Link
+                  key={relatedService.id}
                   href={`/services/${relatedService.id}`}
                   className="group"
                 >
                   <Card className="overflow-hidden hover:shadow-xl transition-all border-2 border-transparent hover:border-cyan-500">
                     <div className="relative h-40 overflow-hidden">
-                      <ImageWithFallback 
+                      <ImageWithFallback
                         src={relatedService.image}
                         alt={relatedService.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Check, Star, Phone, MessageSquare, FileText, Eye, Download, RotateCw } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { ImageWithFallback } from '@/shared/components/figma/ImageWithFallback';
-import { getOrderById } from './api/orders.mock';
+import { getOrderById } from './api/orders.api';
 import { Order, getStatusText, getStatusColor, formatCurrency, formatDate, ReviewData } from './types/order.types';
 import { OrderSummary } from './components/OrderSummary';
 import { OrderPaymentSection } from './components/OrderPaymentSection';
