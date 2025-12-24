@@ -19,10 +19,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "@/modules/*": ["./modules/*"],
-      "@/shared/*": ["./shared/*"],
-      "@/lib/*": ["./lib/*"]
+      "@/*": ["./src/*"],
+      "@/modules/*": ["./src/modules/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/lib/*": ["./src/lib/*"]
     }
   },
   "include": [
@@ -32,9 +32,7 @@
     ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "src/main.tsx",
-    "vite.config.ts"
+    "node_modules"
   ]
 }
 
