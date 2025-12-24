@@ -12,6 +12,7 @@ import {
     type UserDto,
     type LoginRequest,
     type RegisterRequest,
+    type AuthResponse,
 } from "@/lib/auth-api";
 
 interface UserInfo {
@@ -26,6 +27,7 @@ interface UserInfo {
 interface AuthContextType {
     isLoggedIn: boolean;
     userInfo: UserInfo;
+    accessToken: string | null;
     isLoading: boolean;
     login: (info: UserInfo) => void;
     loginWithCredentials: (credentials: LoginRequest) => Promise<void>;
@@ -37,6 +39,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const STORAGE_KEY = "auth_user";
+const TOKEN_KEY = "auth_token";
 
 export function AuthProvider({
     children,
@@ -45,6 +48,7 @@ export function AuthProvider({
 }): React.ReactElement {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [accessToken, setAccessToken] = useState<string | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo>({
         name: "",
         birthdate: "",
@@ -52,17 +56,21 @@ export function AuthProvider({
         email: "",
     });
 
-    // Load user from localStorage on mount
+    // Load user and token from localStorage on mount
     useEffect(() => {
         const storedUser = localStorage.getItem(STORAGE_KEY);
-        if (storedUser) {
+        const storedToken = localStorage.getItem(TOKEN_KEY);
+
+        if (storedUser && storedToken) {
             try {
                 const user = JSON.parse(storedUser);
                 setUserInfo(user);
+                setAccessToken(storedToken);
                 setIsLoggedIn(true);
             } catch (error) {
-                console.error("Failed to parse stored user:", error);
+                console.error("Failed to parse stored auth data:", error);
                 localStorage.removeItem(STORAGE_KEY);
+                localStorage.removeItem(TOKEN_KEY);
             }
         }
         setIsLoading(false);
@@ -90,7 +98,9 @@ export function AuthProvider({
 
             setIsLoggedIn(true);
             setUserInfo(user);
+            setAccessToken(response.accessToken);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+            localStorage.setItem(TOKEN_KEY, response.accessToken);
         } catch (error) {
             console.error("Login failed:", error);
             throw error;
@@ -112,7 +122,9 @@ export function AuthProvider({
 
             setIsLoggedIn(true);
             setUserInfo(user);
+            setAccessToken(response.accessToken);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+            localStorage.setItem(TOKEN_KEY, response.accessToken);
         } catch (error) {
             console.error("Registration failed:", error);
             throw error;
@@ -126,6 +138,7 @@ export function AuthProvider({
             console.error("Logout API call failed:", error);
         } finally {
             setIsLoggedIn(false);
+            setAccessToken(null);
             setUserInfo({
                 name: "",
                 birthdate: "",
@@ -133,6 +146,7 @@ export function AuthProvider({
                 email: "",
             });
             localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(TOKEN_KEY);
         }
     };
 
@@ -146,6 +160,7 @@ export function AuthProvider({
             value={{
                 isLoggedIn,
                 userInfo,
+                accessToken,
                 isLoading,
                 login,
                 loginWithCredentials,

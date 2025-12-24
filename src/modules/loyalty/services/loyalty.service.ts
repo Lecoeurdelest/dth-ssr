@@ -8,3 +8,4 @@ export class LoyaltyService {
     return this.loyaltyRepository.getLoyaltyData();
   }
 }
+

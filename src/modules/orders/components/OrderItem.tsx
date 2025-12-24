@@ -20,7 +20,7 @@ const iconMap = {
 
 export function OrderItem({ order, onReview }: OrderItemProps) {
   const router = useRouter();
-  const Icon = iconMap[order.serviceIcon];
+  const Icon = iconMap[order.serviceIcon] || Home; // Default to Home icon if serviceIcon not found
 
   const handleViewDetails = () => {
     router.push(`/orders/${order.id}`);

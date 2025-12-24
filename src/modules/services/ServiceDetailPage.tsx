@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { servicesData } from './api/services.mock';
+import { getServices, getServiceById, servicesData } from './api/services.mock';
 import { ImageWithFallback } from '@/shared/components/figma/ImageWithFallback';
-import { ArrowLeft, Check, Star, PlayCircle, Phone, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Check, Star, PlayCircle, Phone, MessageSquare, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { Card, CardContent } from '@/shared/components/ui/card';
 import { BookServiceModal, useBooking } from '@/modules/booking';
@@ -20,9 +20,30 @@ interface ServiceDetailPageProps {
 export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
   const router = useRouter();
   const { isBookModalOpen, handleBookService, closeBookModal } = useBooking();
-  
-  // Tìm dịch vụ theo ID
-  const service = servicesData.find(s => s.id === serviceId);
+  const [service, setService] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch service data
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const serviceData = await getServiceById(serviceId);
+        setService(serviceData);
+      } catch (err) {
+        console.error('Failed to load service:', err);
+        setError('Không thể tải thông tin dịch vụ. Vui lòng thử lại.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (serviceId) {
+      fetchService();
+    }
+  }, [serviceId]);
 
   // Scroll to top when service changes
   useEffect(() => {
@@ -45,9 +66,44 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
     }
   }, []);
 
-  // Nếu không tìm thấy dịch vụ, chuyển về trang dịch vụ
+  // Redirect if service not found after loading
+  useEffect(() => {
+    if (!loading && !service && !error) {
+      router.push('/services');
+    }
+  }, [loading, service, error, router]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="pt-24 pb-16 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-cyan-600 mx-auto mb-4" />
+          <p className="text-gray-600">Đang tải thông tin dịch vụ...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="pt-24 pb-16 bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 mb-4">⚠️ {error}</div>
+          <button
+            onClick={() => router.push('/services')}
+            className="px-6 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+          >
+            Quay lại danh sách dịch vụ
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Redirect if service not found
   if (!service) {
-    router.push('/services');
     return null;
   }
 
@@ -212,6 +268,7 @@ export function ServiceDetailPage({ serviceId }: ServiceDetailPageProps) {
             Dịch vụ khác bạn có thể quan tâm
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Load related services - for now using mock data */}
             {servicesData
               .filter(s => s.id !== serviceId)
               .slice(0, 3)

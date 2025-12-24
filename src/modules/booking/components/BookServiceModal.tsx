@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/shared/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogOverlay } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
@@ -77,33 +77,80 @@ export function BookServiceModal({ isOpen, onClose, serviceName, serviceId }: Bo
     setShowWorkerSelection(true);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!formData.paymentMethod) {
       toast.error('Vui lòng chọn phương thức thanh toán');
       return;
     }
 
-    // Mock submit
-    toast.success('Đặt dịch vụ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.');
-    
-    // Reset form
-    setFormData({
-      fullName: '',
-      phone: '',
-      email: '',
-      address: '',
-      serviceDate: '',
-      serviceTime: '',
-      description: '',
-      contactMethod: 'phone',
-      selectedWorkerId: undefined,
-      paymentMethod: undefined
-    });
-    
-    setCurrentStep('form');
-    setShowWorkerSelection(false);
-    setShowPayment(false);
-    onClose();
+    // Additional validation before submission
+    if (!formData.fullName || !formData.phone || !formData.address) {
+      toast.error('Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    if (formData.phone.length < 10) {
+      toast.error('Số điện thoại không hợp lệ');
+      return;
+    }
+
+    // Validate email if provided
+    if (formData.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      toast.error('Email không hợp lệ');
+      return;
+    }
+
+    try {
+      // Import the API function dynamically to avoid circular imports
+      const { createOrder, mapBookingToCreateOrderRequest } = await import('../api/orders.api');
+
+      // Convert form data to API request format
+      const orderRequest = mapBookingToCreateOrderRequest(serviceId || '', formData);
+
+      // Show loading state
+      toast.loading('Đang xử lý đơn hàng...', { id: 'booking-submit' });
+
+      // Create the order
+      const orderResponse = await createOrder(orderRequest);
+
+      toast.success(`Đặt dịch vụ thành công! Mã đơn hàng: #${orderResponse.id}`, { id: 'booking-submit' });
+
+      // Reset form
+      setFormData({
+        fullName: '',
+        phone: '',
+        email: '',
+        address: '',
+        serviceDate: '',
+        serviceTime: '',
+        description: '',
+        contactMethod: 'phone',
+        selectedWorkerId: undefined,
+        paymentMethod: undefined
+      });
+
+      setCurrentStep('form');
+      setShowWorkerSelection(false);
+      setShowPayment(false);
+      onClose();
+
+    } catch (error: any) {
+      console.error('Error creating order:', error);
+
+      // Handle specific error types
+      if (error.message?.includes('401') || error.message?.includes('Unauthorized')) {
+        toast.error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', { id: 'booking-submit' });
+        // Could trigger login modal here
+      } else if (error.message?.includes('403') || error.message?.includes('Forbidden')) {
+        toast.error('Bạn không có quyền thực hiện thao tác này.', { id: 'booking-submit' });
+      } else if (error.message?.includes('400') || error.message?.includes('Bad Request')) {
+        toast.error('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại thông tin.', { id: 'booking-submit' });
+      } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+        toast.error('Lỗi kết nối mạng. Vui lòng kiểm tra kết nối và thử lại.', { id: 'booking-submit' });
+      } else {
+        toast.error('Có lỗi xảy ra khi đặt dịch vụ. Vui lòng thử lại sau.', { id: 'booking-submit' });
+      }
+    }
   };
 
   const mockBookingSummary = {
@@ -118,7 +165,8 @@ export function BookServiceModal({ isOpen, onClose, serviceName, serviceId }: Bo
   return (
     <>
       <Dialog open={isOpen && currentStep === 'form'} onOpenChange={onClose}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-cyan-600">
               Đặt dịch vụ: {serviceName}

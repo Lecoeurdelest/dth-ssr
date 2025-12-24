@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/shared/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogOverlay } from '@/shared/components/ui/dialog';
 import { Button } from '@/shared/components/ui/button';
 import { ArrowLeft, CreditCard, Wallet, Smartphone, CheckCircle } from 'lucide-react';
 import { BookingSummary, PaymentMethod } from '../types/booking.types';
@@ -60,7 +60,8 @@ export function PaymentSection({
 }: PaymentSectionProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogOverlay className="bg-black/50 backdrop-blur-sm" />
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border shadow-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-cyan-600">
             Thanh toán

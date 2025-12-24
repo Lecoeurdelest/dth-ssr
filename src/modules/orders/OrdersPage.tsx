@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from 'react';
-import { Star, Filter } from 'lucide-react';
+import { Star, Filter, Loader2, AlertCircle, LogIn, Lock } from 'lucide-react';
 import { useOrders } from './hooks/useOrders';
 import { OrderList } from './components/OrderList';
 import { OrderStatusFilter } from './components/OrderStatusFilter';
 import { Order, ReviewData } from './types/order.types';
 import { ReviewModal } from './components/ReviewModal';
+import { useAuth } from '@/shared/hooks/useAuth';
+import { useAuthModal } from '@/shared/hooks/useAuthModal';
 
 export function OrdersPage() {
-  const { filteredOrders, orders, filterStatus, setFilterStatus, updateOrder } = useOrders();
+  const { isLoggedIn } = useAuth();
+  const { openLogin } = useAuthModal();
+  const { filteredOrders, orders, isLoading, error, filterStatus, setFilterStatus, updateOrder } = useOrders();
   const [reviewingOrder, setReviewingOrder] = useState<Order | null>(null);
   const [showGuide, setShowGuide] = useState(true);
 
@@ -33,6 +37,35 @@ export function OrdersPage() {
     setReviewingOrder(order);
   };
 
+  // Show login prompt if user is not logged in
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="max-w-md mx-auto text-center">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Lock className="w-10 h-10 text-blue-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-3">Đăng nhập để xem đơn hàng</h1>
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Bạn cần đăng nhập để xem lịch sử đặt dịch vụ và theo dõi trạng thái đơn hàng của mình.
+            </p>
+            <button
+              onClick={openLogin}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-3"
+            >
+              <LogIn className="w-5 h-5" />
+              Đăng nhập ngay
+            </button>
+            <p className="text-sm text-gray-500 mt-4">
+              Chưa có tài khoản? <button onClick={() => openLogin()} className="text-blue-600 hover:underline">Đăng ký</button>
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
@@ -46,8 +79,46 @@ export function OrdersPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Hướng dẫn đánh giá */}
-        {showGuide && orders.some(o => o.status === 'completed' && o.canReview && !o.reviewSubmitted) && (
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <span className="ml-2 text-gray-600">Đang tải danh sách đơn hàng...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className={`border rounded-lg p-4 mb-6 max-w-2xl mx-auto ${
+            error.includes('đăng nhập') || error.includes('hết hạn')
+              ? 'bg-yellow-50 border-yellow-200'
+              : 'bg-red-50 border-red-200'
+          }`}>
+            <div className={`flex items-center gap-2 ${
+              error.includes('đăng nhập') || error.includes('hết hạn')
+                ? 'text-yellow-700'
+                : 'text-red-700'
+            }`}>
+              <AlertCircle className="w-5 h-5" />
+              <span>{error}</span>
+            </div>
+            {(error.includes('đăng nhập') || error.includes('hết hạn')) && (
+              <button
+                onClick={openLogin}
+                className="mt-3 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors flex items-center gap-2"
+              >
+                <LogIn className="w-4 h-4" />
+                Đăng nhập lại
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Main Content - Only show if logged in and no auth errors */}
+        {!isLoading && !error && isLoggedIn && (
+          <>
+            {/* Hướng dẫn đánh giá */}
+            {showGuide && orders.some(o => o.status === 'completed' && o.canReview && !o.reviewSubmitted) && (
           <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border-2 border-yellow-300 rounded-2xl p-4 md:p-6 mb-6 shadow-lg relative">
             <button
               onClick={() => setShowGuide(false)}
@@ -126,8 +197,10 @@ export function OrdersPage() {
           </div>
         </div>
 
-        {/* Danh sách đơn hàng */}
-        <OrderList orders={filteredOrders} onReview={handleReviewClick} />
+            {/* Danh sách đơn hàng */}
+            <OrderList orders={filteredOrders} onReview={handleReviewClick} />
+          </>
+        )}
       </div>
 
       {/* Modal đánh giá */}

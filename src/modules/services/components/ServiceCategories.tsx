@@ -1,13 +1,55 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '@/shared/components/figma/ImageWithFallback';
-import { Star } from 'lucide-react';
+import { Star, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
-import { servicesData } from '../api/services.mock';
+import { getServices } from '../api/services.mock';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
+interface Service {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  rating: number;
+  reviews: number;
+  serviceCount: number;
+  details: any;
+}
 
 export function ServiceCategories() {
   const router = useRouter();
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      const servicesData = await getServices();
+      setServices(servicesData);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to load services:', err);
+      setError('Không thể tải danh sách dịch vụ. Hiển thị dữ liệu mẫu.');
+
+      // Fallback to mock data
+      try {
+        const { servicesData: mockData } = await import('../data/servicesData');
+        setServices(mockData);
+      } catch (fallbackErr) {
+        console.error('Failed to load fallback data:', fallbackErr);
+        setServices([]);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleViewDetails = (serviceId: string) => {
     router.push(`/services/${serviceId}`);
@@ -25,9 +67,33 @@ export function ServiceCategories() {
           </h2>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <span className="ml-2 text-gray-600">Đang tải danh sách dịch vụ...</span>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="w-5 h-5" />
+              <span>{error}</span>
+            </div>
+          </div>
+        )}
+
         {/* Service Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {servicesData.map((service) => (
+        {!loading && (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {services.length === 0 ? (
+              <div className="col-span-full text-center py-12 text-gray-500">
+                <p>Không có dịch vụ nào để hiển thị.</p>
+              </div>
+            ) : (
+              services.map((service) => (
             <div 
               key={service.id}
               className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 group cursor-pointer"
@@ -84,9 +150,11 @@ export function ServiceCategories() {
                   Xem chi tiết
                 </Button>
               </div>
-            </div>
-          ))}
-        </div>
+              </div>
+            ))
+          )}
+          </div>
+        )}
       </div>
     </section>
   );

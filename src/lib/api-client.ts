@@ -11,6 +11,14 @@ interface ApiResponse<T> {
     error?: string;
 }
 
+// Get access token from localStorage
+const getAccessToken = (): string | null => {
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem('auth_token');
+    }
+    return null;
+};
+
 class ApiClient {
     private baseUrl: string;
 
@@ -32,6 +40,15 @@ class ApiClient {
             },
             credentials: "include", // Include cookies for httpOnly tokens
         };
+
+        // Add Authorization header if token exists
+        const token = getAccessToken();
+        if (token) {
+            config.headers = {
+                ...config.headers,
+                "Authorization": `Bearer ${token}`,
+            };
+        }
 
         const response = await fetch(url, config);
 

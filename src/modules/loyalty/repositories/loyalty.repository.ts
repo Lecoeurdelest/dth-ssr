@@ -17,3 +17,4 @@ export class MockLoyaltyRepository implements LoyaltyRepository {
     return this.loyaltyData;
   }
 }
+
