@@ -27,7 +27,7 @@ export function TestimonialsSection() {
       image: 'https://images.unsplash.com/photo-1753161023962-665967602405?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGN1c3RvbWVyJTIwcG9ydHJhaXR8ZW58MXx8fHwxNzY1NTM4MDYyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
       rating: 5,
       review: 'Chuyển nhà nhanh gọn, nhân viên cẩn thận, không làm hỏng đồ đạc. Giá tốt hơn nhiều so với các dịch vụ khác. Rất đáng tin cậy!',
-      service: 'Vận chuyển - khuân vác'
+      service: 'Vận chuyển – Khuân vác'
     },
     {
       name: 'Chị Mai Lan',

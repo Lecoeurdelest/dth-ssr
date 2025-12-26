@@ -35,7 +35,7 @@ export function ProfessionalTeamSection() {
             ĐỘI NGŨ SỬA CHỮA CHUYÊN NGHIỆP
           </h1>
           <p className="text-white/90 text-lg max-w-3xl mx-auto">
-            Công trình đã được uy tín làm chứng – chúng tôi luôn sẵn sàng phục hợp quý khách hàng trong mọi trường hợp khẩn cấp theo yêu cầu
+            Đội thợ được kiểm định và tuyển chọn kĩ càng bởi kĩ sư QC - chúng tôi luôn sẵn sàng phục vụ quý khách hàng trong mọi trường hợp theo yêu cầu
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export function ProfessionalTeamSection() {
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Shield className="w-8 h-8 text-blue-600" />
             </div>
-            <h3 className="font-bold text-xl text-gray-900 mb-2">Cam chứng lập phiếu</h3>
+            <h3 className="font-bold text-xl text-gray-900 mb-2">Cam kết lập phiếu</h3>
             <p className="text-gray-600 text-sm">
               Luôn sẵn sàng
             </p>

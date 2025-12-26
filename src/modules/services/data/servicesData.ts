@@ -275,10 +275,10 @@ export const servicesData: Service[] = [
       ]
     }
   },
-  // 4. Vận chuyển – khuân vác
+  // 4. Vận chuyển – Khuân vác
   {
     id: 'van-chuyen-khuan-vac',
-    title: 'Vận chuyển – khuân vác',
+    title: 'Vận chuyển – Khuân vác',
     description: 'Dịch vụ vận chuyển – Dịch vụ khuân vác',
     image: 'https://images.unsplash.com/photo-1758219944627-4d9b32ed7019?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb3ZpbmclMjB0cnVjayUyMGRlbGl2ZXJ5fGVufDF8fHx8MTc2NTYwNDUzNXww&ixlib=rb-4.1.0&q=80&w=1080',
     rating: 4.8,

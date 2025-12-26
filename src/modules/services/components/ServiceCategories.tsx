@@ -63,7 +63,7 @@ export function ServiceCategories() {
         <div className="text-center mb-12">
           <p className="text-blue-600 font-semibold mb-2">Dịch vụ của chúng tôi</p>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Các Dịch Vụ Của Chúng Tôi
+            Các dịch vụ của chúng tôi
           </h2>
         </div>
 

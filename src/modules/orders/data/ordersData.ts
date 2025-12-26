@@ -250,7 +250,7 @@ export const ordersData: Order[] = [
   {
     id: "4",
     orderCode: "DH001237",
-    serviceType: "Vận chuyển – khuân vác",
+    serviceType: "Vận chuyển – Khuân vác",
     serviceIcon: "moving",
     orderDate: "2024-12-10 08:00",
     status: "completed",
