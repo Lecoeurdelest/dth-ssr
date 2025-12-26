@@ -15,7 +15,7 @@ export function HeroSection() {
       {/* Background Image with Gradient Overlay */}
       <div className="absolute inset-0 z-0">
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbGVjdHJpY2lhbiUyMHJlcGFpciUyMGhvbWUlMjBvcmFuZ2UlMjB1bmlmb3JtfGVufDF8fHx8MTc2NTg4MDkxOHww&ixlib=rb-4.1.0&q=80&w=1080"
+          src="/images/image26.png"         
           alt="Thợ sửa chữa chuyên nghiệp"
           className="w-full h-full object-cover"
         />

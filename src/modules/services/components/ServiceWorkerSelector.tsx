@@ -33,13 +33,13 @@ const serviceTypes: ServiceType[] = [
   },
   {
     id: 'chuyen-khoan-vac',
-    title: 'Thợ tiện chuyên - khoản vác',
+    title: 'Thợ vận chuyên - khuân vác',
     icon: <Package className="w-8 h-8" />,
     description: '📦 Vận chuyển'
   },
   {
     id: 'lap-dat',
-    title: 'Thợ lắp đặt đồ dụng dụng',
+    title: 'Thợ lắp đặt đồ gia dụng',
     icon: <Settings className="w-8 h-8" />,
     description: '🔧 Lắp đặt'
   },

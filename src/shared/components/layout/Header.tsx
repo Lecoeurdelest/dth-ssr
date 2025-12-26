@@ -20,7 +20,7 @@ import { useAuth } from "@/shared/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const logo = "/images/7781fbf195a9d4087a21bb9d8c87d2ea57e570b5.png";
+const logo = "/images/image3.png";
 
 export function Header() {
     const router = useRouter();
@@ -77,7 +77,7 @@ export function Header() {
                 <div className="flex items-center justify-between py-4">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center p-3 shadow-lg">
+                        <div className="w-20 h-20 flex items-center justify-center">
                             <img
                                 src={logo}
                                 alt="Sửa Chữa Nhỏ"

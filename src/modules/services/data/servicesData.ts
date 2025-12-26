@@ -207,7 +207,7 @@ export const servicesData: Service[] = [
   {
     id: 'sua-chua-do-moc',
     title: 'Sửa chữa đồ mộc',
-    description: 'Sửa chữa đồ mộc – Thay thế - tân trang',
+    description: 'Sửa chữa đồ mộc – Thay thế - Tân trang',
     image: 'https://images.unsplash.com/photo-1704784846246-d81b3542d3d3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b29kZW4lMjBkb29yJTIwY2FycGVudHJ5fGVufDF8fHx8MTc2NTYxMzg5NHww&ixlib=rb-4.1.0&q=80&w=1080',
     rating: 4.8,
     reviews: 63,
@@ -350,7 +350,7 @@ export const servicesData: Service[] = [
   {
     id: 'lap-dat-do-gia-dung',
     title: 'Lắp đặt đồ gia dụng',
-    description: 'Lắp đặt đồ gia dụng – Lắp đặt đồ nội thất – đồ mộc',
+    description: 'Lắp đặt đồ gia dụng – Lắp đặt đồ nội thất – Đồ mộc',
     image: 'https://images.unsplash.com/photo-1692731974074-03e7ef257a79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0diUyMGluc3RhbGxhdGlvbiUyMHJlcGFpcnxlbnwxfHx8fDE3NjU2MTU5NjR8MA&ixlib=rb-4.1.0&q=80&w=1080',
     rating: 4.7,
     reviews: 85,

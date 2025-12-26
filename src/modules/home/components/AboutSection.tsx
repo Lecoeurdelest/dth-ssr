@@ -24,7 +24,7 @@ export function AboutSection() {
           <div className="relative">
             <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-gray-100">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1589559375424-c3fa757c3094?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYWludGVuYW5jZSUyMHdvcmtlcnMlMjBncm91cCUyMHByb2Zlc3Npb25hbHxlbnwxfHx8fDE3NjU4ODEyNDZ8MA&ixlib=rb-4.1.0&q=80&w=1080"
+                src="/images/image9.png"  
                 alt="Đội ngũ nhân viên Sửa Chữa Nhỏ"
                 className="w-full h-[500px] object-cover"
               />
@@ -52,20 +52,17 @@ export function AboutSection() {
               VỀ CHÚNG TÔI
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
-              Đơn vị SỬA CHỮA NHỎ
+              Đơn vị sửa chữa điện nước và bảo trì
+              <br />
+              nhà cửa
               <br />
               Hàng đầu tại Ninh Bình
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Chúng tôi là đội ngũ thợ chuyên nghiệp với nhiều năm kinh nghiệm
-              trong lĩnh vực sửa chữa điện nước và bảo trì nhà cửa tại tỉnh Ninh
-              Bình. Cam kết mang đến dịch vụ chất lượng cao, giá cả minh bạch và
-              sự hài lòng tuyệt đối cho khách hàng.
+             Chúng tôi là đội ngũ thợ chuyên nghiệp với nhiều năm kinh nghiệm trong lĩnh vực sửa chữa điện nước và bảo trì nhà cửa tại tỉnh Ninh Bình. Cam kết mang đến dịch vụ chất lượng cao, giá cả minh bạch và sự hài lòng tuyệt đối cho khách hàng.
             </p>
             <p className="text-gray-600 text-lg leading-relaxed">
-              Với phương châm "Chất lượng - Uy tín - Nhanh chóng", chúng tôi
-              luôn đặt lợi ích khách hàng lên hàng đầu, phục vụ tận tâm cho mọi
-              gia đình tại Ninh Bình và các vùng lân cận.
+              Với phương châm "Chất lượng - Uy tín - Nhanh chóng", chúng tôi luôn đặt lợi ích khách hàng lên hàng đầu, phục vụ tận tâm cho mọi gia đình tại Ninh Bình và các vùng lân cận
             </p>
             <Button
               onClick={() => router.push("/news")}
@@ -122,7 +119,7 @@ export function AboutSection() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Hỗ Trợ 24/7
+                  Hỗ trợ 24/7
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
                   Luôn sẵn sàng tiếp nhận và xử lý các yêu cầu sửa chữa khẩn cấp
@@ -140,7 +137,7 @@ export function AboutSection() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Đội Thợ Chuyên Nghiệp
+                  Đội thợ chuyên nghiệp
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
                   Đội ngũ thợ lành nghề, được đào tạo bài bản, có chứng chỉ hành
@@ -158,7 +155,7 @@ export function AboutSection() {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
-                  Giá Cả Minh Bạch
+                  Giá cả minh bạch
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
                   Báo giá rõ ràng trước khi thực hiện, không phát sinh chi phí
