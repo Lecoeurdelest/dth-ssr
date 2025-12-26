@@ -248,25 +248,6 @@ export function ContactSection() {
                 />
               </div>
 
-              {/* Worker Code */}
-              <div>
-                <label
-                  htmlFor="workerCode"
-                  className="block text-gray-700 mb-2"
-                >
-                  Mã thợ
-                </label>
-                <input
-                  type="text"
-                  id="workerCode"
-                  name="workerCode"
-                  value={formData.workerCode}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Nhập mã thợ"
-                />
-              </div>
-
               {/* Requirements */}
               <div>
                 <label
