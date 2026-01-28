@@ -51,7 +51,7 @@ const newsItems: NewsItem[] = [
     title: "Top lỗi thường gặp khi lắp đặt đồ gia dụng mới mua",
     description:
       "Từ lắp máy lọc nước, treo kệ, treo TV đến gắn thiết bị trong bếp – rất nhiều lỗi nhỏ có thể khiến thiết bị nhanh hỏng. Bài viết tổng hợp các lưu ý quan trọng cần tránh.",
-    image: "/images/image24.jng",
+    image: "/images/image24.jpg",
     date: "22/11/2024",
     readTime: "9 phút",
   },
